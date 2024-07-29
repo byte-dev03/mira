@@ -9,9 +9,8 @@ end
 function object:update(player_pos, dt)
   local distance =  math.sqrt(math.pow(player_pos.x-self.pos.x, 2) + math.pow(player_pos.y-self.pos.y, 2))
 
-  if math.floor(distance) <= 30 then
+  if math.floor(distance) <= 50 then
     self.nearPlayer = true
-    print(distance)
   else
     self.nearPlayer = false
   end

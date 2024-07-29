@@ -1,5 +1,4 @@
 local anim8 = require('libs.anim8')
-local utils = require("utils")
 
 local player = {}
 
@@ -20,6 +19,7 @@ function player:load(x,y)
   self.vel = { x = 0, y = 0 }
   self.pos = { x = x, y = y }
   self.speed = 200
+  self.health = 100
 
   self.spritesheet = love.graphics.newImage("assets/Player.png")
 
@@ -131,7 +131,8 @@ function player:update(dt)
 end
 
 function player:draw()
-  self.currentAnim:draw(self.spritesheet, self.pos.x, self.pos.y, 0, 2, 2)
+  self.currentAnim:draw(self.spritesheet, self.pos.x, self.pos.y, 0, 2, 2, 16, 16)
+  love.graphics.circle("line", self.pos.x, self.pos.y+10, 5)
 end
 
 return player
