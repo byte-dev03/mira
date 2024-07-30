@@ -1,5 +1,4 @@
 
-
 function love.load()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
@@ -10,7 +9,6 @@ function love.load()
   camera = require("libs/camera")
   cam = camera(0, 0, 1.5, 0)
 
-  objects = {}
 
   ui:load()
 
@@ -18,25 +16,38 @@ function love.load()
 
   enemies:load()
 
+  objects = { enemies.slime, player }
+
   table.insert(objects, object:new(
+		"chest",
     {x=500, y=200},
-    love.graphics.newImage("assets/Chest_Animated.png"), 
+    love.graphics.newImage("assets/Chest_Animated.png"),
     "1-5")
   )
 
+
+end
+
+function sortByDrawOrder(a, b)
+	return a.pos.y < b.pos.y
 end
 
 function love.update(dt)
 
   ui:update()
 
-  player:update(dt)
+	table.sort(objects, sortByDrawOrder)
 
   for _, obj in pairs(objects) do
-    obj:update(player.pos, dt)
+		if obj.id == "player" then
+			obj:update(dt)
+		elseif obj.id == "enemy" then
+			enemies:update(player, dt)
+		else
+			obj:update(player.pos, dt)
+		end
   end
 
-  enemies:update(dt)
 
   cam:lookAt(player.pos.x, player.pos.y)
 end
@@ -53,8 +64,6 @@ function love.draw()
       obj:draw()
     end
 
-    enemies:draw()
-    player:draw()
 
   cam:detach()
 end

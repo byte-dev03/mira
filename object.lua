@@ -28,10 +28,22 @@ function object:draw()
   self.currentAnim:draw(self.spritesheet, self.pos.x, self.pos.y, 0, 2, 2)
 end
 
-function object:new(pos, spritesheet, frames)
+function object:getBoundingBox()
+  return {
+    x = self.pos.x - self.width / 2,
+    y = self.pos.y - self.height / 2,
+    width = self.width,
+    height = self.height
+  }
+end
+
+function object:new(id, pos, spritesheet, frames)
   self.pos = pos
 
+	self.id = id
   self.spritesheet = spritesheet
+	self.width = self.spritesheet:getWidth()
+	self.height = self.spritesheet:getHeight()
 
   self.grid = anim8.newGrid(16, 16, self.spritesheet:getWidth(), self.spritesheet:getHeight())
   self.currentAnim  = anim8.newAnimation(self.grid(frames, 1), 0.1)

@@ -21,7 +21,10 @@ function player:load(x,y)
   self.speed = 200
   self.health = 100
 
+	self.id = "player"
   self.spritesheet = love.graphics.newImage("assets/Player.png")
+	self.width = self.spritesheet:getWidth()
+	self.height = self.spritesheet:getHeight()
 
   self.grid = anim8.newGrid(32, 32, self.spritesheet:getWidth(), self.spritesheet:getHeight())
   self.idleAnim = {
@@ -128,6 +131,15 @@ function player:update(dt)
   end
 
   self.currentAnim:update(dt)
+end
+
+function player:getBoundingBox()
+  return {
+    x = self.pos.x - self.width / 2,
+    y = self.pos.y - self.height / 2,
+    width = self.width,
+    height = self.height
+  }
 end
 
 function player:draw()
