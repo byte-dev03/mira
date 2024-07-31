@@ -2,18 +2,27 @@ local anim8 = require('libs.anim8')
 
 local slime = {}
 
-local baseDamage = 1
-local healInterval = 1 -- time in seconds between healing ticks
+local baseDamage = 4
+local healInterval = 2 -- time in seconds between healing ticks
 local textDisplayTime = 0.5
 
+function slime:getBoundingBox()
+  return {
+    x = self.pos.x - self.spritesheet:getWidth() / 2,
+    y = self.pos.y - self.spritesheet:getHeight() / 2,
+    width = self.spritesheet:getWidth(),
+    height = self.spritesheet:getHeight()
+  }
+end
+
 function slime:draw()
-	if self.textTimer > 1 then
+	if self.textTimer > 0 then
 		if self.isDamaged then
 			love.graphics.setColor(1, 0, 0)
-		 love.graphics.print("-"..baseDamage, self.pos.x+10, self.pos.y+30)
+		 love.graphics.print("-"..baseDamage, self.pos.x+10, self.pos.y+10)
 		elseif self.health < 100 then
 			love.graphics.setColor(0, 1, 0)
-			love.graphics.print("+"..baseDamage, self.pos.x+10, self.pos.y+30)
+			love.graphics.print("+"..baseDamage, self.pos.x+10, self.pos.y+10)
 		end
 	end
 	love.graphics.setColor(1,1,1)
@@ -23,15 +32,15 @@ end
 
 function slime:update(player, dt)
   local distance =  math.floor(math.sqrt(math.pow(player.pos.x-self.pos.x, 2) + math.pow(player.pos.y+10-self.pos.y, 2)))
-	print(distance)
 	if player.attacked and distance <= 100 then
-		print(distance)
-		self.health = self.health - baseDamage
-		if self.health < 0 then
-			self.health = 0
-		end
-		self.isDamaged = true
-		self.textTimer = textDisplayTime
+    if not self.isDamaged then
+      self.health = self.health - baseDamage
+      if self.health < 0 then
+        self.health = 0
+      end
+      self.isDamaged = true
+      self.textTimer = textDisplayTime
+    end
 	else
 		self.isDamaged = false
 		self.healTimer = self.healTimer + dt
@@ -44,7 +53,8 @@ function slime:update(player, dt)
 	if self.textTimer > 0 then
 		self.textTimer = self.textTimer - dt -- decrease the text display timer
 	end
-	print(self.health)
+  print(self.health)
+
   self.currentAnim:update(dt)
 end
 
